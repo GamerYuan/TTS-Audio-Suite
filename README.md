@@ -23,7 +23,7 @@ Subtitle workflows are still a core focus: the suite can transcribe to SRT, rebu
 
 <!-- ENGINE_COMPARISON_START -->
 
-## Quick Engine Comparison — 19 Engines
+## Quick Engine Comparison — 20 Engines
 
 | Engine | Languages | Size | Key Features |
 |--------|-----------|------|--------------|
@@ -41,6 +41,7 @@ Subtitle workflows are still a core focus: the suite can transcribe to SRT, rebu
 | **Echo-TTS** | 🇺🇸 | ~5.3GB + ~1.8GB | Diffusion-based (~30s best), Force Speaker KV (speaker drift control) |
 | **Fish Audio S2 Pro** | 🌐 80+ languages | ~10.3GB / ~8.0GB | Free-form sub-word emotion/prosody tags, Native multi-speaker and multi-turn dialogue with dynamic speaker references |
 | **Dots TTS** | 🇺🇸​🇨🇳​🇩🇪​🇪🇸​🇫🇷​🇮🇹 +13 | ~6GB | Official auto language detect / language control, SOAR and MeanFlow distilled variants |
+| **Ming 3.0 TTS** | 🌐 7 languages + 2 dialects | ~3.0GB | Zero-shot voice cloning from reference audio, Voice design, freeform delivery instructions, and built-in IP voices |
 | **DramaBox** | 🇺🇸 | ~16.4GB | Expressive scene prompting and stage directions, Native and SRT-aware duration targeting |
 | **OmniVoice** | 🌐 600+ languages | ~3.7GB | Inline non-verbal tags and pronunciation overrides, Reference-free voice design |
 | **MOSS-TTS** | 🇺🇸​🇨🇳​🇩🇪​🇪🇸​🇫🇷​🇮🇹 +18 | ~8.5GB tokenizer + ~6.1GB/17GB/18GB model | Reference-free voice design with MOSS-VoiceGenerator, Native 1-5 speaker TTSD dialogue |
@@ -204,6 +205,7 @@ Start with the **[New Engine Guide Hub](docs/New%20Engines%20Guides/README.md)**
 ## Features
 
 - 🎤 **Multi-Engine TTS**
+- 🗣️ **Ming 3.0 TTS** → 0.5B cloning, multilingual, emotion/dialect/attribute control, voice design, freeform instructions, and built-in IP voices → **[📖 Ming 3.0 TTS Guide](docs/MING_3_0_TTS.md)**
 - 🎨 **Voice Designer** → Create reusable voices with compatible Qwen3-TTS, MOSS, and OmniVoice engines
 - 🌩️ **Sound Effects** → **[📖 Sound Effects Guide](docs/SOUND_EFFECTS_GUIDE.md)**
 - 🔄 **Voice Conversion**
@@ -1575,6 +1577,7 @@ For offline/manual setup:
 | Granite ASR | `ComfyUI/models/TTS/granite_asr/` | ✅ | Granite ASR models; plus adds native diarization/timestamps, optional Qwen forced aligner reused lazily for timestamps/SRT fallback |
 | Echo-TTS | `ComfyUI/models/TTS/echo-tts-base/` | ✅ | ~7.1GB total (base + dac); CC-BY-NC-SA |
 | Dots TTS | `ComfyUI/models/TTS/dots_tts/` | ✅ | Official base / soar / mf checkpoints with tokenizer, vocoder, speaker encoder |
+| Ming 3.0 TTS | `ComfyUI/models/TTS/ming_3_0_tts/` | ✅ checkpoint only | 0.5B checkpoint auto-downloads; the official GitHub source must be placed in upstream/ manually because importing it executes it |
 | DramaBox | `ComfyUI/models/TTS/dramabox/DramaBox/` | ✅ | ~16.4GB download; fast mode roughly 24GB VRAM; experimental FP8, staged, and sequential options can reduce VRAM, but no minimum GPU size is guaranteed; conditional LTX-2 Community License |
 | Fish Audio S2 Pro | `ComfyUI/models/TTS/fish_audio_s2_pro/` | ✅ | Official BF16 or optional community FP8 checkpoint; the official checkpoint can be quantized on load with BNB INT8/NF4; main T5 environment with process teardown for Clear VRAM; Fish Audio Research License |
 | OmniVoice | `ComfyUI/models/TTS/omnivoice/` | ✅ | Official OmniVoice model. Voice cloning in this suite requires explicit reference text. |

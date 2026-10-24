@@ -587,6 +587,38 @@ class DotsTTSCacheKeyGenerator(CacheKeyGenerator):
         return hashlib.md5(cache_string.encode()).hexdigest()
 
 
+class Ming30TTSCacheKeyGenerator(CacheKeyGenerator):
+    """Cache key generator for Ming 3.0 TTS."""
+
+    def generate_cache_key(self, **params) -> str:
+        cache_data = {
+            'text': params.get('text', ''),
+            'audio_component': params.get('audio_component', ''),
+            'prompt_text': params.get('prompt_text', ''),
+            'model': params.get('model', 'Ming-3.0-tts-0.5B'),
+            'task_mode': params.get('task_mode', 'TTS (voice cloning)'),
+            'official_task': params.get('official_task', 'TTS'),
+            'language': params.get('language', 'none'),
+            'controls': params.get('controls', ''),
+            'instruction': params.get('instruction', ''),
+            'cfg': round(float(params.get('cfg', 2.0)), 4),
+            'sigma': round(float(params.get('sigma', 0.25)), 4),
+            'temperature': round(float(params.get('temperature', 0.0)), 4),
+            'max_length': params.get('max_length', 24),
+            'max_decode_steps': params.get('max_decode_steps', 1000),
+            'text_normalization': bool(params.get('text_normalization', False)),
+            'cache_prompts': bool(params.get('cache_prompts', True)),
+            'upstream_path': params.get('upstream_path', 'auto'),
+            'use_spk_emb': bool(params.get('use_spk_emb', False)),
+            'use_zero_spk_emb': bool(params.get('use_zero_spk_emb', False)),
+            'seed': params.get('seed', 0),
+            'device': params.get('device', 'auto'),
+            'character': params.get('character', 'narrator'),
+            'engine': 'ming_3_0_tts',
+        }
+        return hashlib.md5(str(sorted(cache_data.items())).encode()).hexdigest()
+
+
 class DramaBoxCacheKeyGenerator(CacheKeyGenerator):
     """Cache key generator for official DramaBox inference."""
 
@@ -723,6 +755,7 @@ class AudioCache:
             'cosyvoice': CosyVoiceCacheKeyGenerator(),
             'qwen3_tts': Qwen3TTSCacheKeyGenerator(),
             'dots_tts': DotsTTSCacheKeyGenerator(),
+            'ming_3_0_tts': Ming30TTSCacheKeyGenerator(),
             'dramabox': DramaBoxCacheKeyGenerator(),
             'fish_audio_s2': FishAudioS2CacheKeyGenerator(),
             'omnivoice': OmniVoiceCacheKeyGenerator(),
@@ -801,6 +834,8 @@ class AudioCache:
         # Use engine-specific sample rates
         if engine_type in ('dots_tts', 'dramabox', 'moss_soundeffect_v2'):
             sample_rate = 48000
+        elif engine_type == 'ming_3_0_tts':
+            sample_rate = 44100
         elif engine_type in ('f5tts', 'step_audio_editx', 'qwen3_tts', 'moss_tts', 'higgs_audio_v3', 'omnivoice'):
             sample_rate = 24000
         elif engine_type in ('index_tts', 'cosyvoice'):

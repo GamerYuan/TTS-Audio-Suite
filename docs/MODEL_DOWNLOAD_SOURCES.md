@@ -131,6 +131,13 @@ Use this as the canonical list of model repositories/links for offline setup.
 | dots.tts-soar | [rednote-hilab/dots.tts-soar](https://huggingface.co/rednote-hilab/dots.tts-soar) | ~6GB | ✅ | Official SOAR checkpoint for higher-quality zero-shot cloning |
 | dots.tts-mf | [rednote-hilab/dots.tts-mf](https://huggingface.co/rednote-hilab/dots.tts-mf) | ~6GB | ✅ | Official MeanFlow-distilled checkpoint for faster inference |
 
+## Ming 3.0 TTS
+
+| Component | Source | Size | Auto-Download | Notes |
+|---|---|---|---|---|
+| Ming-3.0-tts-0.5B checkpoint | [inclusionAI/Ming-3.0-tts-0.5B](https://huggingface.co/inclusionAI/Ming-3.0-tts-0.5B) | ~3.0GB | ✅ | Weights, tokenizer files, and campplus.onnx speaker encoder; downloaded into models/TTS/ming_3_0_tts/. The checkpoint alone is not executable. |
+| Official source checkout | [inclusionAI/Ming-3.0-tts](https://github.com/inclusionAI/Ming-3.0-tts) | ~15MB | ❌ | MIT-licensed executable source (ming_tts.py, modeling_bailingmm.py, tts_tasks.py, frontend/, audio_tokenizer/, fm/). Not auto-downloaded because importing it executes it; place it at models/TTS/ming_3_0_tts/upstream/. |
+
 ## DramaBox
 
 | Component | Source | Size | Auto-Download | Notes |

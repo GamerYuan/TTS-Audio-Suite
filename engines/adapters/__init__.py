@@ -50,6 +50,15 @@ except Exception as e:
             raise ImportError(f"Dots TTS adapter not available: {e}")
 
 try:
+    from .ming_3_0_tts_adapter import Ming30TTSEngineAdapter
+    MING_3_0_TTS_ADAPTER_AVAILABLE = True
+except Exception as e:
+    MING_3_0_TTS_ADAPTER_AVAILABLE = False
+    class Ming30TTSEngineAdapter:
+        def __init__(self, *args, **kwargs):
+            raise ImportError(f"Ming 3.0 TTS adapter not available: {e}")
+
+try:
     from .dramabox_adapter import DramaBoxEngineAdapter
     DRAMABOX_ADAPTER_AVAILABLE = True
 except Exception as e:
@@ -97,9 +106,11 @@ except Exception as e:
 __all__ = [
     'ChatterBoxEngineAdapter', 'F5TTSEngineAdapter', 'CosyVoiceAdapter', 'EchoTTSEngineAdapter',
     'DotsTTSEngineAdapter', 'DramaBoxEngineAdapter', 'OmniVoiceEngineAdapter',
+    'Ming30TTSEngineAdapter',
     'MossTTSEngineAdapter', 'HiggsAudioV3EngineAdapter',
     'CHATTERBOX_ADAPTER_AVAILABLE', 'F5TTS_ADAPTER_AVAILABLE', 'COSYVOICE_ADAPTER_AVAILABLE',
     'ECHO_TTS_ADAPTER_AVAILABLE', 'DOTS_TTS_ADAPTER_AVAILABLE',
+    'MING_3_0_TTS_ADAPTER_AVAILABLE',
     'DRAMABOX_ADAPTER_AVAILABLE', 'OMNIVOICE_ADAPTER_AVAILABLE',
     'MOSS_TTS_ADAPTER_AVAILABLE', 'HIGGS_AUDIO_V3_ADAPTER_AVAILABLE',
     'MossSoundEffectV2Adapter'

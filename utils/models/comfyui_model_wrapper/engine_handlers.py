@@ -195,11 +195,16 @@ class DotsTTSHandler(BaseEngineHandler):
             return 0
 
 
+class Ming30TTSHandler(DotsTTSHandler):
+    """Handler for Ming 3.0 TTS, which holds an imported upstream runtime."""
+
+
 # Engine registry
 _ENGINE_HANDLERS = {
     'chatterbox': BaseEngineHandler(),
     'chatterbox_official_23lang': BaseEngineHandler(),
     'dots_tts': DotsTTSHandler(),
+    'ming_3_0_tts': Ming30TTSHandler(),
     'f5tts': BaseEngineHandler(),
     'echo_tts': BaseEngineHandler(),
     'higgs_audio': HiggsAudioHandler(),

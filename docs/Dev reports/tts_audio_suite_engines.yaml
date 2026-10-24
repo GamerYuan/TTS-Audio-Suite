@@ -1345,6 +1345,74 @@ engines:
       speed_performance: { supported: "partial", notes: "Moderate; mf variant is faster" }
       reference_free_tts: { supported: true, notes: "(default speaker)" }
 
+  - id: ming-3.0-tts
+    name: Ming 3.0 TTS
+    models: "Ming-3.0-tts-0.5B"
+    size: "~3.0GB"
+    license: "MIT (code and weights)"
+    commercial: true
+    language_summary_full: "7 languages + 2 dialects"
+    language_summary_compact: "🌐 7 languages + 2 dialects"
+
+    capabilities:
+      tts: true
+      srt: true
+      vc: false
+      asr: false
+      sound_effects: false
+      training: false
+
+    runtime_isolation:
+      default_mode: "main_environment"
+      main_environment: true
+      shared_runtime: false
+
+    special_features:
+      - "Zero-shot voice cloning from reference audio"
+      - "Voice design, freeform delivery instructions, and built-in IP voices"
+      - "Official emotion, dialect, speed, pitch, and volume controls"
+      - "Native semantic fragmenting and inline paralinguistic tags"
+      - "Character, language, and pause tags in TTS Text and SRT"
+
+    model_sources:
+      - component: "Ming-3.0-tts-0.5B checkpoint"
+        source_name: "inclusionAI/Ming-3.0-tts-0.5B"
+        source_url: "https://huggingface.co/inclusionAI/Ming-3.0-tts-0.5B"
+        size: "~3.0GB"
+        auto_download: true
+        notes: "Weights, tokenizer files, and campplus.onnx speaker encoder; downloaded into models/TTS/ming_3_0_tts/. The checkpoint alone is not executable."
+      - component: "Official source checkout"
+        source_name: "inclusionAI/Ming-3.0-tts"
+        source_url: "https://github.com/inclusionAI/Ming-3.0-tts"
+        size: "~15MB"
+        auto_download: false
+        notes: "MIT-licensed executable source (ming_tts.py, modeling_bailingmm.py, tts_tasks.py, frontend/, audio_tokenizer/, fm/). Not auto-downloaded because importing it executes it; place it at models/TTS/ming_3_0_tts/upstream/."
+
+    languages:
+      en: { supported: true, flag: "🇺🇸", notes: "" }
+      zh: { supported: true, flag: "🇨🇳", notes: "Mandarin; Cantonese and Sichuanese use the DIALECT task" }
+      de: { supported: true, flag: "🇩🇪", notes: "Multilingual task" }
+      es: { supported: true, flag: "🇪🇸", notes: "Multilingual task" }
+      fr: { supported: true, flag: "🇫🇷", notes: "Multilingual task" }
+      ja: { supported: true, flag: "🇯🇵", notes: "Multilingual task" }
+      ko: { supported: true, flag: "🇰🇷", notes: "Multilingual task" }
+      it: { supported: false, flag: "🇮🇹", notes: "" }
+      ru: { supported: false, flag: "🇷🇺", notes: "" }
+      pt: { supported: false, flag: "🇵🇹", notes: "" }
+
+    features:
+      voice_cloning: { supported: true, notes: "Reference audio plus exact transcript gives the full acoustic prompt; without a transcript the official API uses the speaker embedding only" }
+      reference_transcript: { requirement: optional }
+      native_multi_speaker: { supported: false, notes: "Character switching generates each segment independently" }
+      voice_conversion: { supported: false, notes: "Not exposed by the official 0.5B TTS API" }
+      asr_transcribe: { supported: false, notes: "" }
+      emotion_control: { supported: true, notes: "Official EMOTION task with a reference voice and seven values" }
+      native_long_form: { supported: true, notes: "Official semantic fragmenting controlled by max_length; Voice design and Freeform preserve first-fragment reference reuse" }
+      community_finetunes: { supported: false, notes: "No suite integration" }
+      vram_efficient: { supported: "partial", notes: "0.5B bf16 plus audio tokenizer; CUDA bf16 is required. Exact peak VRAM was not measured in this environment." }
+      speed_performance: { supported: "partial", notes: "No live benchmark in this environment; decoding is capped by the official 512-position KV cache" }
+      reference_free_tts: { supported: true, notes: "Built-in voice, Voice design, and Freeform run without reference audio" }
+
   - id: dramabox
     name: DramaBox
     models: "DramaBox 3.3B"
@@ -1995,6 +2063,10 @@ readme_model_download_table:
     primary_model_path: "ComfyUI/models/TTS/dots_tts/"
     auto_download: "✅"
     notes: "Official base / soar / mf checkpoints with tokenizer, vocoder, speaker encoder"
+  - engine: "Ming 3.0 TTS"
+    primary_model_path: "ComfyUI/models/TTS/ming_3_0_tts/"
+    auto_download: "✅ checkpoint only"
+    notes: "0.5B checkpoint auto-downloads; the official GitHub source must be placed in upstream/ manually because importing it executes it"
   - engine: "DramaBox"
     primary_model_path: "ComfyUI/models/TTS/dramabox/DramaBox/"
     auto_download: "✅"
@@ -2446,6 +2518,38 @@ model_layouts_markdown: |
   - Downloads into a dedicated `dots_tts/` folder.
   - Native sample rate is 48kHz.
   - Main-environment support works on Transformers 5; on Windows, `normalize_text` falls back to no-op if `WeTextProcessing` is unavailable.
+
+  ## Ming 3.0 TTS
+
+  ```text
+  ComfyUI/models/TTS/ming_3_0_tts/
+  ├── Ming-3.0-tts-0.5B/
+  │   ├── added_tokens.json
+  │   ├── campplus.onnx
+  │   ├── config.json
+  │   ├── merges.txt
+  │   ├── model.safetensors
+  │   ├── special_tokens_map.json
+  │   ├── tokenizer.json
+  │   ├── tokenizer_config.json
+  │   └── vocab.json
+  └── upstream/
+      ├── ming_tts.py
+      ├── modeling_bailingmm.py
+      ├── tts_tasks.py
+      ├── prompt_contract.py
+      ├── spkemb_extractor.py
+      ├── configuration_bailingmm.py
+      ├── frontend/
+      ├── audio_tokenizer/
+      └── fm/
+  ```
+
+  Notes:
+
+  - The Hugging Face checkpoint is downloaded by the suite into `Ming-3.0-tts-0.5B/`.
+  - The official GitHub source in `upstream/` is a separate manual step. The suite does not auto-download executable source.
+  - Native sample rate is 44.1kHz. The official 0.5B runtime requires CUDA bf16 execution.
 
   ## OmniVoice
 

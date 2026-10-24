@@ -223,6 +223,12 @@ Hello! This is unified SRT TTS with character switching.
                 stable_params['optimize'] = config.get('optimize', False)
                 stable_params['max_generate_length'] = config.get('max_generate_length', 500)
 
+            if engine_type == "ming_3_0_tts":
+                stable_params['model'] = config.get('model', 'Ming-3.0-tts-0.5B')
+                stable_params['upstream_path'] = config.get('upstream_path', 'auto')
+                stable_params['text_normalization'] = bool(config.get('text_normalization', False))
+                stable_params['cache_prompts'] = bool(config.get('cache_prompts', True))
+
             if engine_type == "dramabox":
                 stable_params['model_name'] = config.get('model_name', 'DramaBox')
                 stable_params['precision'] = config.get('precision', 'auto')
@@ -582,6 +588,55 @@ Hello! This is unified SRT TTS with character switching.
                             raise InterruptedError("Dots TTS SRT processing interrupted by user")
 
                 engine_instance = DotsTTSSRTWrapper(config)
+
+                import time
+                self._cached_engine_instances[cache_key] = {
+                    'instance': engine_instance,
+                    'timestamp': time.time()
+                }
+                return engine_instance
+
+            elif engine_type == "ming_3_0_tts":
+                ming_srt_processor_path = os.path.join(
+                    nodes_dir, "ming_3_0_tts", "ming_3_0_tts_srt_processor.py"
+                )
+                ming_srt_spec = importlib.util.spec_from_file_location(
+                    "ming_3_0_tts_srt_processor_module", ming_srt_processor_path
+                )
+                ming_srt_module = importlib.util.module_from_spec(ming_srt_spec)
+                ming_srt_spec.loader.exec_module(ming_srt_module)
+
+                Ming30TTSSRTProcessor = ming_srt_module.Ming30TTSSRTProcessor
+
+                class Ming30TTSSRTWrapper:
+                    def __init__(self, config):
+                        self.config = config
+                        self.processor = Ming30TTSSRTProcessor(self, config)
+
+                    def update_config(self, new_config):
+                        self.config = new_config.copy()
+                        self.processor.update_config(new_config)
+
+                    def process_with_error_handling(self, func):
+                        try:
+                            return func()
+                        except Exception as error:
+                            raise error
+
+                    def format_audio_output(self, audio_tensor, sample_rate):
+                        if audio_tensor.is_cuda:
+                            audio_tensor = audio_tensor.cpu()
+                        if audio_tensor.dim() == 1:
+                            audio_tensor = audio_tensor.unsqueeze(0).unsqueeze(0)
+                        elif audio_tensor.dim() == 2:
+                            audio_tensor = audio_tensor.unsqueeze(0)
+                        return {"waveform": audio_tensor, "sample_rate": sample_rate}
+
+                    def check_interrupt(self):
+                        if model_management.interrupt_processing:
+                            raise InterruptedError("Ming 3.0 TTS SRT processing interrupted by user")
+
+                engine_instance = Ming30TTSSRTWrapper(config)
 
                 import time
                 self._cached_engine_instances[cache_key] = {
@@ -1360,6 +1415,31 @@ Hello! This is unified SRT TTS with character switching.
                 )
 
             elif engine_type == "dots_tts":
+                timing_params = {
+                    'fade_for_StretchToFit': fade_for_StretchToFit,
+                    'max_stretch_ratio': max_stretch_ratio,
+                    'min_stretch_ratio': min_stretch_ratio,
+                    'timing_tolerance': timing_tolerance
+                }
+
+                voice_mapping = {}
+                if audio_tensor is not None or audio_path:
+                    voice_mapping['narrator'] = {
+                        'audio': audio_tensor,
+                        'audio_path': audio_path,
+                        'reference_text': reference_text if reference_text else "",
+                    }
+
+                result = engine_instance.processor.process_srt_content(
+                    srt_content=srt_content,
+                    voice_mapping=voice_mapping,
+                    seed=seed,
+                    timing_mode=timing_mode,
+                    timing_params=timing_params,
+                    enable_audio_cache=enable_audio_cache
+                )
+
+            elif engine_type == "ming_3_0_tts":
                 timing_params = {
                     'fade_for_StretchToFit': fade_for_StretchToFit,
                     'max_stretch_ratio': max_stretch_ratio,

@@ -90,6 +90,11 @@ PARAMETER_ALIASES = {
     'max_new_tokens': 'max_new_tokens',
     'max_generate_length': 'max_generate_length',
     'max_audio_patches': 'max_generate_length',
+    'sigma': 'sigma',
+    'max_length': 'max_length',
+    'semantic_length': 'max_length',
+    'max_decode_steps': 'max_decode_steps',
+    'decode_steps': 'max_decode_steps',
     'n_vq': 'n_vq_for_inference',
     'n_vq_for_inference': 'n_vq_for_inference',
     'instruction': 'instruction',
@@ -118,15 +123,17 @@ PARAMETER_ENGINES = {
         'chatterbox', 'chatterbox_official_23lang', 'f5tts', 'higgs_audio',
         'higgs_audio_v3', 'vibevoice', 'index_tts', 'step_audio_editx', 'cosyvoice', 'qwen3_tts',
         'dots_tts', 'fish_audio_s2', 'omnivoice',
+        'ming_3_0_tts',
         'echo_tts', 'moss_tts', 'moss_soundeffect_v2', 'dramabox'
     },
     'temperature': {
         'chatterbox', 'chatterbox_official_23lang', 'f5tts', 'higgs_audio',
-        'higgs_audio_v3', 'vibevoice', 'index_tts', 'step_audio_editx', 'qwen3_tts', 'moss_tts', 'fish_audio_s2'
+        'higgs_audio_v3', 'vibevoice', 'index_tts', 'step_audio_editx', 'qwen3_tts', 'moss_tts', 'fish_audio_s2',
+        'ming_3_0_tts'
     },
     'cfg': {
         'f5tts', 'vibevoice', 'index_tts', 'chatterbox', 'chatterbox_official_23lang',
-        'moss_soundeffect_v2', 'dramabox'
+        'moss_soundeffect_v2', 'dramabox', 'ming_3_0_tts'
     },
     'stg_scale': {
         'dramabox'
@@ -248,6 +255,15 @@ PARAMETER_ENGINES = {
     'max_generate_length': {
         'dots_tts'
     },
+    'sigma': {
+        'ming_3_0_tts'
+    },
+    'max_length': {
+        'ming_3_0_tts'
+    },
+    'max_decode_steps': {
+        'ming_3_0_tts'
+    },
     'n_vq_for_inference': {
         'moss_tts'
     },
@@ -328,6 +344,9 @@ PARAMETER_VALIDATION = {
     'duration_tokens': (int, 0, 8192, "MOSS-TTS duration hint in audio tokens"),
     'max_new_tokens': (int, 64, 16384, "Maximum generated tokens"),
     'max_generate_length': (int, 32, 1024, "Dots TTS maximum audio patch budget"),
+    'sigma': (float, 0.0, 1.0, "Ming flow-matching sigma"),
+    'max_length': (int, 4, 256, "Ming semantic fragment target length"),
+    'max_decode_steps': (int, 1, 2000, "Ming maximum decode steps per fragment"),
     'n_vq_for_inference': (int, 0, 32, "MOSS-TTS Local Transformer RVQ layers for inference"),
     'instruction': (str, None, None, "MOSS-TTS whole-segment instruction"),
     'quality': (str, None, None, "MOSS-TTS whole-segment quality hint"),
@@ -356,6 +375,7 @@ PARAMETER_NODE_KEYS = {
         'f5tts': 'cfg_strength',
         'moss_soundeffect_v2': 'cfg_scale',
         'dramabox': 'cfg_scale',
+        'ming_3_0_tts': 'cfg',
     },  # Engine-specific mapping
     'stg_scale': 'stg_scale',
     'duration_multiplier': 'duration_multiplier',
@@ -397,6 +417,9 @@ PARAMETER_NODE_KEYS = {
     'duration_tokens': 'duration_tokens',
     'max_new_tokens': 'max_new_tokens',
     'max_generate_length': 'max_generate_length',
+    'sigma': 'sigma',
+    'max_length': 'max_length',
+    'max_decode_steps': 'max_decode_steps',
     'n_vq_for_inference': 'n_vq_for_inference',
     'instruction': 'instruction',
     'quality': 'quality',

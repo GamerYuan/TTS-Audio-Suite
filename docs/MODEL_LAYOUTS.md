@@ -436,6 +436,38 @@ Notes:
 - Native sample rate is 48kHz.
 - Main-environment support works on Transformers 5; on Windows, `normalize_text` falls back to no-op if `WeTextProcessing` is unavailable.
 
+## Ming 3.0 TTS
+
+```text
+ComfyUI/models/TTS/ming_3_0_tts/
+├── Ming-3.0-tts-0.5B/
+│   ├── added_tokens.json
+│   ├── campplus.onnx
+│   ├── config.json
+│   ├── merges.txt
+│   ├── model.safetensors
+│   ├── special_tokens_map.json
+│   ├── tokenizer.json
+│   ├── tokenizer_config.json
+│   └── vocab.json
+└── upstream/
+    ├── ming_tts.py
+    ├── modeling_bailingmm.py
+    ├── tts_tasks.py
+    ├── prompt_contract.py
+    ├── spkemb_extractor.py
+    ├── configuration_bailingmm.py
+    ├── frontend/
+    ├── audio_tokenizer/
+    └── fm/
+```
+
+Notes:
+
+- The Hugging Face checkpoint is downloaded by the suite into `Ming-3.0-tts-0.5B/`.
+- The official GitHub source in `upstream/` is a separate manual step. The suite does not auto-download executable source.
+- Native sample rate is 44.1kHz. The official 0.5B runtime requires CUDA bf16 execution.
+
 ## OmniVoice
 
 ```text

@@ -180,6 +180,14 @@ except Exception as e:
     DOTS_TTS_ENGINE_AVAILABLE = False
 
 try:
+    ming_3_0_tts_engine_module = load_node_module("ming_3_0_tts_engine_node", "engines/ming_3_0_tts_engine_node.py")
+    Ming30TTSEngineNode = ming_3_0_tts_engine_module.Ming30TTSEngineNode
+    MING_3_0_TTS_ENGINE_AVAILABLE = True
+except Exception as e:
+    print(f"❌ Ming 3.0 TTS Engine failed: {e}")
+    MING_3_0_TTS_ENGINE_AVAILABLE = False
+
+try:
     dramabox_engine_module = load_node_module("dramabox_engine_node", "engines/dramabox_engine_node.py")
     DramaBoxEngineNode = dramabox_engine_module.DramaBoxEngineNode
     DRAMABOX_ENGINE_AVAILABLE = True
@@ -693,6 +701,10 @@ if ECHO_TTS_ENGINE_AVAILABLE:
 if DOTS_TTS_ENGINE_AVAILABLE:
     NODE_CLASS_MAPPINGS["DotsTTSEngineNode"] = DotsTTSEngineNode
     NODE_DISPLAY_NAME_MAPPINGS["DotsTTSEngineNode"] = "⚙️ Dots TTS Engine"
+
+if MING_3_0_TTS_ENGINE_AVAILABLE:
+    NODE_CLASS_MAPPINGS["Ming30TTSEngineNode"] = Ming30TTSEngineNode
+    NODE_DISPLAY_NAME_MAPPINGS["Ming30TTSEngineNode"] = "⚙️ Ming 3.0 TTS Engine"
 
 if DRAMABOX_ENGINE_AVAILABLE:
     NODE_CLASS_MAPPINGS["DramaBoxEngineNode"] = DramaBoxEngineNode

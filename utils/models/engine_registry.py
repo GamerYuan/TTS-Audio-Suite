@@ -157,6 +157,13 @@ ENGINE_REGISTRY: Dict[str, EngineCapabilities] = {
         fallback_languages=["English"],
     ),
 
+    "ming_3_0_tts": EngineCapabilities(
+        supports_voice_conversion=False,
+        multilingual_model_switching=False,  # One 0.5B checkpoint for all languages
+        can_corrupt_on_reload=False,
+        fallback_languages=["English"],
+    ),
+
     "dramabox": EngineCapabilities(
         supports_voice_conversion=False,
         multilingual_model_switching=False,
